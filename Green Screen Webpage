@@ -1,0 +1,89 @@
+/*html*/
+<script src="http://www.dukelearntoprogram.com/course1/common/js/image/SimpleImage.js">
+</script>
+
+<h1>Green Screen Webpage</h1>
+
+<canvas id="fgcan">
+</canvas>
+<canvas id="bgcan">
+</canvas>
+<canvas id="newcan">
+</canvas>
+<p> 
+Foreground:
+<input type="file" multiple="false" accept="image/*" id="fgfile" onchange="loadForegroundImage()"> 
+</p>  
+
+<p> 
+Background:
+<input type="file" multiple="false" accept="image/*" id="bgfile" onchange="loadbackgroundImage()"> 
+</p>
+
+<p>
+<input type="button" value="Create Composite" onclick="greenScreen()"> 
+<input type="button" value="Clear Canvases" onclick = "canvasClear()"> 
+</p>
+
+/*css*/
+h1{
+  color: green;
+  font-size: 20pt
+}
+canvas{
+  border: 1px solid 
+  lightgray;
+  height: 150px;
+  width: 200px  
+}
+
+/*javascript*/
+var fgImage = null;
+var bgImage = null;
+var greenThreshold = 240;
+function loadForegroundImage() {
+  var canvas = document.getElementById("fgcan");
+  var imgFile =document.getElementById("fgfile");
+  fgImage = new SimpleImage(imgFile);
+  fgImage.drawTo(canvas)
+}
+function loadbackgroundImage() {
+  var imgFile =document.getElementById("bgfile");
+  bgImage = new SimpleImage(imgFile);
+  var canvas = document.getElementById("bgcan");
+  bgImage.drawTo(canvas)
+}
+function greenScreen() {
+  if (fgImage == null || ! fgImage.complete()) {
+  alert("foreground not loaded");
+  return;
+  }
+  if (bgImage == null || ! bgImage.complete()) {
+  alert("background not loaded");
+ }  
+ var output = new SimpleImage(fgImage.getWidth(), fgImage.getHeight() );
+
+for(var pixel of fgImage.values()) {
+ var x = pixel.getX();
+ var y = pixel.getY(); 
+ if (pixel.getGreen() > greenThreshold) {
+   var bgPixel = bgImage.getPixel(x, y);
+   output.setPixel(x, y, bgPixel); 
+ }
+  else { output.setPixel(x,y,pixel); }
+ }
+var imgcanvas2=document.getElementById("newcan");
+output.drawTo(imgcanvas2);
+}
+function canvasClear() {
+  var canvas1 = document.getElementById("fgcan");
+  var canvas2 = document.getElementById("bgcan");
+  var canvas3 = document.getElementById("newcan");
+  var ctx1 = canvas1.getContext("2d");
+  var ctx2 = canvas2.getContext("2d");
+  var ctx3 = canvas3.getContext("2d");
+  ctx1.clearRect(0,0,canvas1.width,canvas1.height);
+  ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+  ctx3.clearRect(0,0,canvas3.width,canvas3.height);
+}
+
