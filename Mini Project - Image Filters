@@ -1,0 +1,193 @@
+/*html*/
+<script  src="http://www.dukelearntoprogram.com/course1/common/js/image/SimpleImage.js"></script>
+<h1>Image Filter</h1>
+<canvas id="can"></canvas>
+ <p> <input type="file" multiple="false" accept="image/*" id="finput" onchange="upload()"> 
+</p>
+   <p> 
+<input type="button" value="Gray Filter" onclick="Gray()">
+     
+<input type="button" value="Red Filter" onclick="Red()">
+     
+<input type="button" value="Rainbow Filter" onclick="Rainbow()">
+</p>
+<p>
+<input type="button" value="Reset" onclick="Reset()">
+</p>
+
+/*css*/
+body {
+  /*Background color for entire page*/
+  background-color: lightblue;
+}
+canvas{
+  border: 1px solid #c3c3c3;
+
+  width: 200px;
+  height: 200px;
+}
+body{
+  margin: 30px;
+}
+
+
+/*javascript*/
+var image = null;
+var rainimage = null;
+var grayimage = null;
+var redimage = null;
+
+function upload(){
+  var imgcanvas = document.getElementById("can");
+  var fileinput=document.getElementById("finput");
+  image = new SimpleImage(fileinput);
+  rainimage = new SimpleImage(fileinput);
+  grayimage = new SimpleImage(fileinput);
+  redimage = new SimpleImage(fileinput);
+  image.drawTo(imgcanvas);
+}
+function Reset(){
+  var imgcanvas = document.getElementById("can");
+  var fileinput=document.getElementById("finput");
+  image = new SimpleImage(fileinput);
+  image.drawTo(imgcanvas);
+  return image
+}
+
+function Gray(){
+  for(var pixel of grayimage.values()) {
+		var originalPixel = image.getPixel(pixel.getX(), pixel.getY());
+		grayimage.setPixel(pixel.getX(), pixel.getY(), originalPixel)
+	}
+    for(var pixel of grayimage.values()){
+    var avg = (pixel.getRed()+pixel.getGreen()+pixel.getBlue())/3;
+    pixel.setRed(avg);
+    pixel.setGreen(avg);
+    pixel.setBlue(avg);
+}
+  var imgcanvas=document.getElementById("can");
+  grayimage.drawTo(imgcanvas);
+}
+function Red(){
+  
+  for(var pixel of redimage.values()) {
+		var originalPixel = image.getPixel(pixel.getX(), pixel.getY());
+		redimage.setPixel(pixel.getX(), pixel.getY(), originalPixel)
+	}
+    for(var pixel of image.values()){
+    var avg = (pixel.getRed()+pixel.getGreen()+pixel.getBlue())/3;
+      if(avg<128){
+        pixel.setRed(2*avg);
+        pixel.setGreen(0);
+        pixel.setBlue(0);
+      }
+   else{
+        pixel.setRed(255);
+        pixel.setGreen(2*avg-255);
+        pixel.setBlue(2*avg-255);
+   }
+}
+  var imgcanvas=document.getElementById("can");
+  image.drawTo(imgcanvas);
+}
+
+function Rainbow(){
+    for(var pixel of rainimage.values()) {
+		var originalPixel = image.getPixel(pixel.getX(), pixel.getY());
+		rainimage.setPixel(pixel.getX(), pixel.getY(), originalPixel)
+	}
+  for(var pixel of image.values()) {
+  var avg = (pixel.getRed()+pixel.getGreen()+pixel.getBlue())/3;
+  /* ---- Red Strip ----- */
+		if(pixel.getY() <= image.getHeight() * (1/7)) {
+			if(avg < 128) {
+				pixel.setRed(2 * avg);
+				pixel.setGreen(0);
+				pixel.setBlue(0);
+			} 
+    else {
+				pixel.setRed(255);
+				pixel.setGreen(avg * 2 - 255);
+				pixel.setBlue(avg * 2 - 255);
+			}
+		}
+    /* ----- Orange Stripe ----- */
+		if(pixel.getY() > image.getHeight()*(1/7) && pixel.getY() <= image.getHeight() * (2/7)) {
+			if(avg < 128) {
+				pixel.setRed(2 * avg);
+				pixel.setGreen(0.8 * avg);
+				pixel.setBlue(0);
+			} else {
+				pixel.setRed(255);
+				pixel.setGreen(1.2 * avg - 51);
+				pixel.setBlue(avg * 2 - 255);
+			}
+		}
+    /* ----- Yellow Strip ----- */
+		if(pixel.getY() > image.getHeight() * (2/7) && pixel.getY() <= image.getHeight() * (3/7)) {
+			if(avg < 128) {
+				pixel.setRed(2 * avg);
+				pixel.setGreen(2 * avg);
+				pixel.setBlue(0);
+			} else {
+				pixel.setRed(255);
+				pixel.setGreen(255);
+				pixel.setBlue(avg * 2 - 255);
+			}
+		}
+    /* ----- Green Strip ----- */
+		if(pixel.getY() > image.getHeight() * (3/7) && pixel.getY() <= image.getHeight() * (4/7)) {
+			if(avg < 128) {
+				pixel.setRed(0);
+				pixel.setGreen(2 * avg);
+				pixel.setBlue(0);
+			} else {
+				pixel.setRed(avg * 2 - 255);
+				pixel.setGreen(255);
+				pixel.setBlue(avg * 2 - 255);
+			}
+		}
+		
+		/* ----- Blue Strip ----- */
+		if(pixel.getY() > image.getHeight() * (4/7) && pixel.getY() <= image.getHeight() * (5/7)) {
+			if(avg < 128) {
+				pixel.setRed(0);
+				pixel.setGreen(0);
+				pixel.setBlue(2 * avg);
+			} else {
+				pixel.setRed(avg * 2 - 255);
+				pixel.setGreen(avg * 2 - 255);
+				pixel.setBlue(255);
+			}
+		}
+		
+		/* ----- Indigo Strip ----- */
+		if(pixel.getY() > image.getHeight() * (5/7) && pixel.getY() <= image.getHeight() * (6/7)) {
+			if(avg < 128) {
+				pixel.setRed(0.8 * avg);
+				pixel.setGreen(0);
+				pixel.setBlue(2 * avg);
+			} else {
+				pixel.setRed(1.2 * avg - 51);
+				pixel.setGreen(avg * 2 - 255);
+				pixel.setBlue(255);
+			}
+		}
+		
+		/* ----- Violet Strip ----- */
+		if(pixel.getY() > image.getHeight() * (6/7) && pixel.getY() <= image.getHeight() * (7/7)) {
+			if(avg < 128) {
+				pixel.setRed(1.6 * avg);
+				pixel.setGreen(0);
+				pixel.setBlue(1.6 * avg);
+			} else {
+				pixel.setRed(0.4 * avg + 153);
+				pixel.setGreen(avg * 2 - 255);
+				pixel.setBlue(0.4 * avg + 153);
+			}
+		}
+    
+  }
+    var imgcanvas = document.getElementById("can");
+    image.drawTo(imgcanvas);
+}
