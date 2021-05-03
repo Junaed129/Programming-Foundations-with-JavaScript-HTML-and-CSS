@@ -1,0 +1,55 @@
+/* html */
+<script src="http://www.dukelearntoprogram.com/course1/common/js/image/SimpleImage.js">
+</script>
+
+<h1>Crop Image</h1>
+
+<canvas id="orgcan">
+</canvas>
+<canvas id="cropcan">
+</canvas>
+<p> 
+<input type="file" multiple="false" accept="image/*" id="orgfile" onchange="loadForegroundImage()"> 
+</p>  
+
+<p> 
+<input type="button" value="Crop Image" onclick="cropImage(600, 500)"> 
+</p>
+
+/*CSS */
+h1{
+  color: green;
+  font-size: 20pt
+}
+canvas{
+  border: 1px solid 
+  lightgray;
+  /*height: 150px;
+  width: 200px*/  
+}
+
+/*javascript */
+var orgImage;
+function loadForegroundImage() {
+  var canvas = document.getElementById("orgcan");
+  var imgFile =document.getElementById("orgfile");
+  orgImage = new SimpleImage(imgFile);
+  orgImage.drawTo(canvas)
+}
+
+function cropImage(width,height){
+     var n = new SimpleImage(width,height);
+     for(var p of orgImage.values()){
+   	   var x = p.getX();
+   	   var y = p.getY();
+       if (x < width && y < height){
+       var np = n.getPixel(x,y);
+       np.setRed(p.getRed());
+       np.setBlue(p.getBlue());
+       np.setGreen(p.getGreen()); 
+}
+     }
+     var cropcanvas = document.getElementById("cropcan");
+     n.drawTo(cropcanvas);
+     return n;
+}
