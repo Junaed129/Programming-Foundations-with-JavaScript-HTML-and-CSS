@@ -1,0 +1,69 @@
+/*html */
+<h1> Paint Your Own Picture</h1>
+<p> 
+   Set width
+  <input type = "text"  onchange = setWidth(this.value)>
+   Set height
+  <input type = "text"  onchange = setHeight(this.value)>
+</p>
+
+<canvas id ="canvas1" onmousedown ="startPaint()" onmousemove = doPaint(event.offsetX,event.offsetY) onmouseup = endPaint()>
+</canvas>
+
+<p>
+  Brush color
+   <input type = "color"  value = "#000" onchange = changeColor(this.value)>
+  Brush Size
+  <input type = "range"  id = sizeInput min = 1 max = 50 value=50  oninput = resizeBrush(this.value)>
+  <output id="sizeOutput">50</output>
+</p>
+
+<p>
+  <input type = "button" id=clear value= ClearCanvas onclick = clearCanvas()>
+  </p>
+
+/*css*/
+canvas{
+  border: 1px solid #c3c3c3;
+  color: gray
+}
+
+/*javascript*/
+var paintcanvas = document.getElementById("canvas1");
+var context = paintcanvas.getContext("2d");
+var color = 'black';
+var radius = 50;
+// only paint if mouse is  being dragged (moved while the button is pressed)
+var isPainting = false;
+
+function setWidth (value) {
+ if(isNumeric (value)==true){
+   canvas1.width = value
+ }
+}
+
+function setHeight(value) {
+ if(isNumeric (value)==true){
+   canvas1.height = value
+ }
+}
+
+function startPaint() {
+ isPainting = true ;
+}
+
+function changeColor(newColor) {
+ color = newColor ;
+}
+
+function endPaint() {
+ isPainting = false ;
+}
+
+function doPaint(x,y) {
+  if(isPainting==true){
+   paintCircle (x,y);
+ }
+}
+
+
